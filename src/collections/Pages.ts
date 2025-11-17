@@ -1,5 +1,5 @@
-import type { CollectionConfig } from 'payload';
-import { Banner } from '../blocks/Banner';
+import type { CollectionConfig } from 'payload'
+import { Banner } from '../blocks/Banner'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -22,6 +22,16 @@ export const Pages: CollectionConfig = {
       required: true,
     },
     {
+      name: 'visualEditor',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '/components/admin/EditInstructions',
+        },
+      },
+    },
+    {
       name: 'slug',
       type: 'text',
       label: 'Page Slug',
@@ -29,18 +39,6 @@ export const Pages: CollectionConfig = {
       unique: true,
       admin: {
         description: 'URL-friendly version of the title (e.g., "home", "about-us")',
-      },
-    },
-    {
-      name: 'visualEditorLink',
-      type: 'ui',
-      admin: {
-        components: {
-          Field: () => {
-            // This will be shown in the admin panel
-            return null; // We'll add the button in the admin UI
-          },
-        },
       },
     },
     {
@@ -75,10 +73,7 @@ export const Pages: CollectionConfig = {
               type: 'blocks',
               label: 'Page Builder',
               minRows: 1,
-              blocks: [
-                Banner,
-                // Add more blocks here as you create them
-              ],
+              blocks: [Banner],
             },
           ],
         },
@@ -98,7 +93,8 @@ export const Pages: CollectionConfig = {
               type: 'textarea',
               label: 'Meta Description',
               admin: {
-                description: 'Description that appears in search results (recommended: 150-160 characters)',
+                description:
+                  'Description that appears in search results (recommended: 150-160 characters)',
               },
             },
             {
@@ -147,4 +143,4 @@ export const Pages: CollectionConfig = {
       ],
     },
   ],
-};
+}

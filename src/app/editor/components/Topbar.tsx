@@ -1,38 +1,36 @@
-'use client';
+'use client'
 
-import { useEditor } from '@craftjs/core';
-import { useState } from 'react';
-import { Save, Eye, Sparkles, X, Check } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useEditor } from '@craftjs/core'
+import { useState } from 'react'
+import { Save, Eye, Sparkles, X, Check, FileText, Monitor } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export function Topbar({
   enabled,
   setEnabled,
   pageId,
   pageSlug,
+  pageTitle,
 }: {
-  enabled: boolean;
-  setEnabled: (v: boolean) => void;
-  pageId: string;
-  pageSlug: string;
+  enabled: boolean
+  setEnabled: (v: boolean) => void
+  pageId: string
+  pageSlug: string
+  pageTitle: string
 }) {
-  const { query } = useEditor();
-  const router = useRouter();
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const { query } = useEditor()
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   const handleSave = async () => {
-    setSaving(true);
-    setSaved(false);
+    setSaving(true)
+    setSaved(false)
 
     try {
-      // Get the current editor state
-      const json = query.serialize();
+      const json = query.serialize()
+      const pageBuilder = convertToPayloadFormat(json)
 
-      // Convert to Payload format
-      const pageBuilder = convertToPayloadFormat(json);
-
-      // Save to Payload CMS
       const response = await fetch(`/api/pages/${pageId}`, {
         method: 'PATCH',
         headers: {
@@ -41,59 +39,70 @@ export function Topbar({
         body: JSON.stringify({
           pageBuilder,
         }),
-      });
+      })
 
       if (response.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        setSaved(true)
+        setTimeout(() => setSaved(false), 3000)
       } else {
-        alert('Failed to save');
+        alert('Failed to save')
       }
     } catch (error) {
-      console.error('Save error:', error);
-      alert('Error saving page');
+      console.error('Save error:', error)
+      alert('Error saving page')
     }
 
-    setSaving(false);
-  };
+    setSaving(false)
+  }
 
   const handlePreview = () => {
-    window.open(`/${pageSlug}`, '_blank');
-  };
+    window.open(`/${pageSlug}`, '_blank')
+  }
 
   const handleExit = () => {
-    if (confirm('Exit without saving changes?')) {
-      router.push('/admin/collections/pages');
+    if (confirm('Exit editor? Any unsaved changes will be lost.')) {
+      router.push('/admin/collections/pages')
     }
-  };
+  }
 
   return (
-    <div className="bg-white border-b shadow-sm">
-      <div className="flex items-center justify-between px-6 py-4">
-        {/* Left - Mode Toggle */}
+    <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg">
+      <div className="flex items-center justify-between px-6 py-3">
+        {/* Left - Page Info & Mode Toggle */}
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-gray-900">Visual Editor</h1>
+          {/* Page Info */}
+          <div className="flex items-center gap-3 pr-4 border-r border-gray-700">
+            <div className="p-2 bg-blue-600 rounded-lg">
+              <FileText className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold">{pageTitle}</h1>
+              <p className="text-xs text-gray-400">/{pageSlug}</p>
+            </div>
+          </div>
+
+          {/* Edit/Preview Toggle */}
           <button
             onClick={() => setEnabled(!enabled)}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-lg font-medium
-              transition-all duration-200
+              flex items-center gap-2 px-5 py-2 rounded-lg font-medium text-sm
+              transition-all duration-200 transform hover:scale-105
               ${
                 enabled
-                  ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg shadow-blue-500/50'
+                  : 'bg-gray-700 hover:bg-gray-600'
               }
             `}
           >
             {enabled ? (
               <>
                 <Sparkles className="w-4 h-4" />
-                Edit Mode
+                <span>Edit Mode</span>
               </>
             ) : (
               <>
-                <Eye className="w-4 h-4" />
-                Preview Mode
+                <Monitor className="w-4 h-4" />
+                <span>Preview Mode</span>
               </>
             )}
           </button>
@@ -104,10 +113,10 @@ export function Topbar({
           {/* Preview Button */}
           <button
             onClick={handlePreview}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-all"
           >
             <Eye className="w-4 h-4" />
-            Preview
+            <span>Preview Site</span>
           </button>
 
           {/* Save Button */}
@@ -115,30 +124,30 @@ export function Topbar({
             onClick={handleSave}
             disabled={saving}
             className={`
-              flex items-center gap-2 px-6 py-2 rounded-lg font-medium
-              transition-all duration-200
+              flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm
+              transition-all duration-200 transform hover:scale-105
               ${
                 saved
-                  ? 'bg-green-600 text-white'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-green-600 shadow-lg shadow-green-500/50'
+                  : 'bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg shadow-blue-600/50 hover:shadow-xl'
               }
-              disabled:opacity-50 disabled:cursor-not-allowed
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
             `}
           >
             {saved ? (
               <>
                 <Check className="w-4 h-4" />
-                Saved!
+                <span>Saved!</span>
               </>
             ) : saving ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Saving...
+                <span>Saving...</span>
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Save
+                <span>Save Changes</span>
               </>
             )}
           </button>
@@ -146,33 +155,31 @@ export function Topbar({
           {/* Exit Button */}
           <button
             onClick={handleExit}
-            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-red-600/20 text-red-400 hover:bg-red-600/30 rounded-lg font-medium text-sm transition-all"
           >
             <X className="w-4 h-4" />
-            Exit
+            <span>Exit</span>
           </button>
         </div>
       </div>
 
-      {/* Status Bar */}
+      {/* Save Success Bar */}
       {saved && (
-        <div className="bg-green-50 border-t border-green-200 px-6 py-2">
-          <p className="text-sm text-green-800">
-            ✓ Changes saved successfully
+        <div className="bg-green-600 px-6 py-2 animate-pulse">
+          <p className="text-sm flex items-center gap-2">
+            <Check className="w-4 h-4" />
+            <span>Changes saved successfully!</span>
           </p>
         </div>
       )}
     </div>
-  );
+  )
 }
 
-// Helper function to convert Craft.js format to Payload format
 function convertToPayloadFormat(craftJson: string) {
-  // Parse Craft.js state
-  const state = JSON.parse(craftJson);
-  const blocks: any[] = [];
+  const state = JSON.parse(craftJson)
+  const blocks: any[] = []
 
-  // Convert each node to Payload block format
   Object.values(state).forEach((node: any) => {
     if (node.type?.resolvedName === 'EditableBanner') {
       blocks.push({
@@ -182,10 +189,10 @@ function convertToPayloadFormat(craftJson: string) {
         textAlignment: node.props.textAlignment,
         height: node.props.height,
         textColor: node.props.textColor,
-      });
+        backgroundImage: node.props.backgroundImage,
+      })
     }
-    // Add more block type conversions here
-  });
+  })
 
-  return blocks;
+  return blocks
 }
