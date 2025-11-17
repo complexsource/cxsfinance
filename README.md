@@ -1,67 +1,155 @@
-# Payload Blank Template
+# CXS Finance - Payload CMS
 
-This template comes configured with the bare minimum to get started on anything you need.
+A modern CMS built with Payload CMS and PostgreSQL featuring a drag-and-drop page builder with custom components.
 
-## Quick start
+## Features
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+- 🎨 **Drag & Drop Page Builder** - Build pages visually with reusable blocks
+- 🎯 **Banner Component** - Customizable banner/hero sections with multiple styles
+- 📱 **Responsive** - Mobile-first design approach
+- 🔒 **Secure** - Built-in authentication and role-based access
+- 🗄️ **PostgreSQL** - Robust and scalable database
+- 🎭 **Rich Text Editor** - Lexical editor for content creation
 
-## Quick Start - local setup
+## Prerequisites
 
-To spin up this template locally, follow these steps:
+- Node.js 18+ 
+- PostgreSQL 14+
+- npm or yarn or pnpm
 
-### Clone
+## Database Setup
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+1. Create PostgreSQL database:
 
-### Development
+```sql
+CREATE DATABASE payload_cms;
+CREATE USER payload_user WITH PASSWORD 'your_secure_password';
+GRANT ALL PRIVILEGES ON DATABASE payload_cms TO payload_user;
+```
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+2. Update `.env` file with your database credentials:
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+```env
+DATABASE_URI=postgresql://payload_user:your_secure_password@localhost:5432/payload_cms
+PAYLOAD_SECRET=your-secret-key-here-minimum-32-characters-long
+PORT=3000
+```
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+## Installation
 
-#### Docker (Optional)
+1. Install dependencies:
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+```bash
+npm install
+```
 
-To do so, follow these steps:
+2. Start the development server:
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+```bash
+npm run dev
+```
 
-## How it works
+3. Open your browser and navigate to:
+   - Admin Panel: `http://localhost:3000/admin`
+   - API: `http://localhost:3000/api`
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+4. Create your first admin user when prompted
 
-### Collections
+## Project Structure
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+```
+cxsfinance/
+├── src/
+│   ├── blocks/              # Reusable content blocks
+│   │   └── Banner.ts        # Banner component
+│   ├── collections/         # Data collections
+│   │   ├── Users.ts         # User authentication
+│   │   ├── Pages.ts         # Page builder
+│   │   └── Media.ts         # Media library
+│   ├── payload.config.ts    # Payload configuration
+│   └── server.ts            # Express server
+├── .env                     # Environment variables
+├── package.json
+└── tsconfig.json
+```
 
-- #### Users (Authentication)
+## Using the Page Builder
 
-  Users are auth-enabled collections that have access to the admin panel.
+### Creating a Homepage
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+1. Log in to the admin panel at `/admin`
+2. Navigate to **Pages** collection
+3. Click **Create New**
+4. Fill in:
+   - **Title**: "Homepage"
+   - **Slug**: "home"
+   - **Page Type**: "Homepage"
+5. In **Page Builder**, click **Add Block**
+6. Select **Banner** from the dropdown
+7. Configure the banner:
+   - Banner Type (Hero, Standard, Minimal)
+   - Heading & Subheading
+   - Background Image
+   - CTA Buttons
+   - Text Alignment & Colors
+8. **Drag and drop** to reorder blocks
+9. Click **Save** or **Publish**
 
-- #### Media
+### Banner Component Options
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+- **Banner Types**: Hero, Standard, Minimal
+- **Text Alignment**: Left, Center, Right
+- **Colors**: Dark or Light text
+- **Heights**: Small (300px), Medium (500px), Large (700px), Full Screen
+- **Background**: Upload images with optional dark overlay
+- **CTA Buttons**: Up to 3 buttons with customizable styles
+- **Button Styles**: Primary, Secondary, Outline
 
-### Docker
+## API Endpoints
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+### Get All Pages
+```
+GET /api/pages
+```
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+### Get Single Page
+```
+GET /api/pages/:id
+```
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+### Get Page by Slug
+```
+GET /api/pages?where[slug][equals]=home
+```
 
-## Questions
+## Building for Production
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+```bash
+npm run build
+npm run serve
+```
+
+## Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run serve` - Run production server
+- `npm run generate:types` - Generate TypeScript types
+
+## Next Steps
+
+- Add more custom blocks (Text Content, Image Gallery, Cards, etc.)
+- Create a frontend to display your pages
+- Configure SEO settings
+- Add more page templates
+- Customize the admin UI
+
+## Support
+
+For issues and questions:
+- Payload Docs: https://payloadcms.com/docs
+- GitHub: https://github.com/payloadcms/payload
+
+## License
+
+MIT
