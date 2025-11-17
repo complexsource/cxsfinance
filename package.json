@@ -18,6 +18,8 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@craftjs/core": "^0.2.12",
+    "@craftjs/utils": "^0.2.5",
     "@payloadcms/db-postgres": "3.64.0",
     "@payloadcms/next": "3.64.0",
     "@payloadcms/richtext-lexical": "3.64.0",
@@ -26,9 +28,12 @@
     "dotenv": "16.4.7",
     "express": "^5.1.0",
     "graphql": "^16.8.1",
+    "lucide-react": "^0.554.0",
     "next": "15.4.7",
     "payload": "3.64.0",
     "react": "19.1.0",
+    "react-color": "^2.19.3",
+    "react-contenteditable": "^3.3.7",
     "react-dom": "19.1.0",
     "sharp": "0.34.2"
   },
@@ -47,7 +52,7 @@
     "playwright-core": "1.56.1",
     "postcss": "^8.5.6",
     "prettier": "^3.4.2",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^3.4.0",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.3"

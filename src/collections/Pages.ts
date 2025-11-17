@@ -32,6 +32,18 @@ export const Pages: CollectionConfig = {
       },
     },
     {
+      name: 'visualEditorLink',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: () => {
+            // This will be shown in the admin panel
+            return null; // We'll add the button in the admin UI
+          },
+        },
+      },
+    },
+    {
       name: 'pageType',
       type: 'select',
       label: 'Page Type',
